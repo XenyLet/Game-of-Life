@@ -7,7 +7,7 @@ import random
 
 random.seed(1)
 
-grid = life.setup(50, "random", "strict_border", multiprocessing_const=1)
+grid = life.setup(50, "random", "strict_border", multiprocessing_const = 4)
 i = 0
 grid_old = None
 grid_old_old = None

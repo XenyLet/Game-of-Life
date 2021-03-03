@@ -1,5 +1,5 @@
 from multiprocessing import Pool
-from itertools import product
+from itertools import product, repeat
 from functools import partial
 from random import choice
 import numpy as np
@@ -9,6 +9,7 @@ filling_types = ["empty", "full", "random"]
 border_logics = ["wrap", "strict_border"]
 height, width, processes_num, border_logic = None, None, None, None
 
+MP_GRID = None
 
 def setup(side_size, filling_type, _border_logic, multiprocessing_const=4):
     def z():
@@ -80,6 +81,11 @@ def _count_alive_neighbours(_grid, x, y):
 
     return alive
 
+def _get_next_cell_state_packed(coords):
+    x, y = coords
+    assert MP_GRID is not None
+    _, is_altered =  _get_next_cell_state(MP_GRID, x, y)
+    return (x, y), is_altered
 
 def _get_next_cell_state(_grid, x, y):
     neighbours = _count_alive_neighbours(_grid, x, y)
@@ -142,11 +148,22 @@ def set(_grid, x, y, val):
 def make_step(_grid):
     cells_to_alter = []  # tuples list [(x, y), ...]
 
-    for x in range(width):
-        for y in range(height):
-            new_val, is_altered = _get_next_cell_state(_grid, x, y)
-            if is_altered:
-                cells_to_alter.append((x, y))
+    if processes_num == 1:
+        for x in range(width):
+            for y in range(height):
+                new_val, is_altered = _get_next_cell_state(_grid, x, y)
+                if is_altered:
+                    cells_to_alter.append((x, y))
+
+    else:
+        global MP_GRID
+        MP_GRID = _grid
+
+        coords = product(range(width), range(height))
+        with Pool(processes_num) as pool:
+            results = pool.map(_get_next_cell_state_packed, coords)
+        cells_to_alter = map(lambda res: res[0], filter(lambda res: res[1], results))
+        MP_GRID = None
 
     for x, y in cells_to_alter:
         switch(_grid, x, y)
