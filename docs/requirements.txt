@@ -1,0 +1,15 @@
+attrs @ file:///tmp/build/80754af9/attrs_1604765588209/work
+certifi==2020.12.5
+importlib-metadata @ file:///tmp/build/80754af9/importlib-metadata_1602276842396/work
+iniconfig @ file:///home/linux1/recipes/ci/iniconfig_1610983019677/work
+more-itertools @ file:///tmp/build/80754af9/more-itertools_1613676688952/work
+numpy==1.20.1
+packaging @ file:///tmp/build/80754af9/packaging_1611952188834/work
+pluggy==0.13.1
+psutil==5.7.0
+py @ file:///tmp/build/80754af9/py_1607971587848/work
+pyparsing @ file:///home/linux1/recipes/ci/pyparsing_1610983426697/work
+pytest==6.2.2
+six @ file:///tmp/build/80754af9/six_1605205313296/work
+toml @ file:///tmp/build/80754af9/toml_1592853716807/work
+zipp @ file:///tmp/build/80754af9/zipp_1604001098328/work

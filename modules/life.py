@@ -1,8 +1,10 @@
 from multiprocessing import Pool
-from itertools import product, repeat
+from itertools import product
 from functools import partial
 from random import choice
 import numpy as np
+
+from modules.utils import group_list, one_level_flatten
 
 displ_base = [-1, 0, 1]
 filling_types = ["empty", "full", "random"]
@@ -10,6 +12,7 @@ border_logics = ["wrap", "strict_border"]
 height, width, processes_num, border_logic = None, None, None, None
 
 MP_GRID = None
+
 
 def setup(side_size, filling_type, _border_logic, multiprocessing_const=4):
     def z():
@@ -81,11 +84,21 @@ def _count_alive_neighbours(_grid, x, y):
 
     return alive
 
+
 def _get_next_cell_state_packed(coords):
-    x, y = coords
     assert MP_GRID is not None
-    _, is_altered =  _get_next_cell_state(MP_GRID, x, y)
-    return (x, y), is_altered
+    res = []
+    for coord_pair in coords:
+        x, y = coord_pair
+        _, is_altered = _get_next_cell_state(MP_GRID, x, y)
+        res.append(
+            (
+                (x, y),
+                is_altered
+            )
+        )
+    return res
+
 
 def _get_next_cell_state(_grid, x, y):
     neighbours = _count_alive_neighbours(_grid, x, y)
@@ -160,8 +173,10 @@ def make_step(_grid):
         MP_GRID = _grid
 
         coords = product(range(width), range(height))
+        args = group_list(coords, processes_num)
         with Pool(processes_num) as pool:
-            results = pool.map(_get_next_cell_state_packed, coords)
+            results = pool.map(_get_next_cell_state_packed, args)
+        results = one_level_flatten(results)
         cells_to_alter = map(lambda res: res[0], filter(lambda res: res[1], results))
         MP_GRID = None
 
