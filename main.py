@@ -1,6 +1,7 @@
 from modules import life
 from modules.visualizer import Visualizer
 from copy import deepcopy
+from time import sleep
 
 import random
 
@@ -24,9 +25,10 @@ while True:
                     life._check_stable(grid, grid_old, grid_old_old):
                 print("Game ended!")
                 break
-        if i % 10 == 0:
+        if i % 1 == 0:
             vis.draw_grid(grid)
         i += 1
+        sleep(0.2)
     except KeyboardInterrupt:
         ans = input("resume?")
         if ans.lower() == "n":

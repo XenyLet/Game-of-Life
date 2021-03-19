@@ -31,7 +31,7 @@ def perform_single_test(side_size, processes_num):
 
 if __name__ == '__main__':
     res = []
-    for side in [5, 10, 20, 40, 80, 160]:
+    for side in [5, 10, 20, 40]:
         sub_res = []
         for processes in [1, 2, 4, 6, 8]:
             sub_res.append(perform_single_test(side, processes))
