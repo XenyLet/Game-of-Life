@@ -13,13 +13,13 @@ with open(args.inp) as f:
 
 side_sizes = [row[0] for row in data[1:]]
 series_labels = zip(data[0][1:], ['g', 'b', 'r', 'k', 'y'])
-data = [[float(el) for el in row[:5]] for row in data[1:]]
+data = [[float(el) for el in row[1:]] for row in data[1:]]
 data = np.array(data)
 
 plt.figure()
 for i, label in enumerate(series_labels):
     plt.plot(side_sizes, data[:, i], f'{label[1]}-', label=label[0])
-plt.legend(loc="lower right")
+plt.legend(loc="upper left")
 plt.title("Running time VS Field side size for different number of processes")
 plt.xlabel("Field side size")
 plt.ylabel("Running time")
